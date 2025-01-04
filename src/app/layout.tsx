@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { Provider } from "@/components/provider";
+import { Provider } from "@/components/design/provider";
 import { BaseLayout } from "@/components/base-layout";
 import { getLocale, getMessages } from "next-intl/server";
-import { NextIntlClientProvider } from 'next-intl';
+import { NextIntlClientProvider } from "next-intl";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,15 +33,18 @@ export default async function RootLayout({
   // side is the easiest way to get started
   const messages = await getMessages();
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NextIntlClientProvider messages={messages}>
+        <NextIntlClientProvider
+          messages={messages}
+          locale={locale}
+          timeZone="Asia/Bangkok"
+          now={new Date()}
+        >
           <Provider>
-            <BaseLayout>
-              {children}
-            </BaseLayout>
+            <BaseLayout>{children}</BaseLayout>
           </Provider>
         </NextIntlClientProvider>
       </body>

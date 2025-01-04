@@ -3,7 +3,7 @@
         "title": "Hello world!"
     },
     "zod": {
-        "invalid_type": "Expected {expected}, received {received}",
+        "invalid_type": "กรุณาระบุข้อมูลให้ถูกต้อง",
         "invalid_type_with_path": "{path} is expected {expected}, but received {received}",
         "invalid_type_received_undefined": "Required",
         "invalid_literal": "Invalid literal value, expected {expected}",
@@ -21,7 +21,7 @@
         "not_multiple_of": "Number must be a multiple of {multipleOf}",
         "not_finite": "Number must be finite",
         "invalid_string": {
-          "email": "{validation} ไม่ถูกต้อง",
+          "email": "อีเมล์ไม่ถูกต้อง",
           "url": "Invalid {validation}",
           "uuid": "Invalid {validation}",
           "cuid": "Invalid {validation}",
@@ -40,9 +40,9 @@
             "not_inclusive_other": "Array must contain more than {minimum} elements"
           },
           "string": {
-            "inclusive": "String must contain at least {minimum} character(s)",
-            "inclusive_one": "String must contain at least {minimum} character",
-            "inclusive_other": "String must contain at least {minimum} characters",
+            "inclusive": "กรุณาระบุตัวอักษร",
+            "inclusive_one": "กรุณาระบุตัวอักษรอย่างน้อย 1 ตัวอักษร",
+            "inclusive_other": "กรุณาระบุตัวอักษรอย่างน้อย {minimum} ตัวอักษร",
             "inclusive_with_path": "{path} must contain at least {minimum} character(s)",
             "inclusive_with_path_one": "{path} must contain at least {minimum} character",
             "inclusive_with_path_other": "{path} must contain at least {minimum} characters",

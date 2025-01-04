@@ -15,7 +15,7 @@ import estreePlugin from "prettier/plugins/estree";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { WatchRender } from "@/components/watch-render";
+import { WatchRender } from "@/components/design/watch-render";
 
 type FormValues = {
   method: string;
@@ -169,7 +169,8 @@ function ShowCode() {
           `const authorization = header.get("authorization");`,
         values.authorization_header &&
           !values.header &&
-          `const authorization = (await headers()).get("authorization");`,
+          `const header = await headers();
+          const authorization = header.get("authorization");`,
       ];
 
       return options.filter(Boolean).join("");
@@ -183,13 +184,14 @@ function ShowCode() {
       return imports.filter(Boolean).join("\n");
     };
 
-    const createCorsHeaders = () => `
+    const createCorsHeaders = () =>
+      `
             headers: {
                 'Access-Control-Allow-Origin': '${values.cors_url ?? "*"}',
                 'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
                 'Access-Control-Allow-Headers': 'Content-Type, Authorization',
             },
-        `;
+        `.trim();
 
     const createParams = () =>
       values.params ?
@@ -203,9 +205,9 @@ function ShowCode() {
     
             export async function ${values.method ?? "GET"}(req: NextRequest${createParams()}) {
                 ${createOption()}
-                const data = await res.json();
+
                 return new Response.json({
-                    data
+                    success: true,
                 }, {
                     status: 200,
                     ${values.cors ? createCorsHeaders() : ""}
@@ -220,9 +222,7 @@ function ShowCode() {
         plugins: [babelPlugin, typescript, estreePlugin],
         parser: "typescript",
       })
-      .then((formattedCode) => {
-        setText(formattedCode);
-      });
+      .then(setText);
   }, [getValues]);
 
   useEffect(() => {

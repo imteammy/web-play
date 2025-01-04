@@ -92,3 +92,7 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+select {
+  @apply h-9 rounded-md p-2 border w-full ;
+}

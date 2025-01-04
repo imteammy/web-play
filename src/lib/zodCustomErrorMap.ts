@@ -1,7 +1,6 @@
 "use client";
-import { useTranslations } from "next-intl";
+import { TranslationValues, useTranslations } from "next-intl";
 import { z } from "zod";
-
 
 const hasInclusiveType = [
   "inclusive",
@@ -21,7 +20,8 @@ const hasInclusiveType = [
 export const useCreateCustomErrorMap = (): z.ZodErrorMap => {
   const t = useTranslations("zod");
   return (issue, ctx) => {
-    let key = "";
+    let key: any = "";
+
     const { code } = issue;
     switch (code) {
       case "too_big":
@@ -37,6 +37,9 @@ export const useCreateCustomErrorMap = (): z.ZodErrorMap => {
       default:
         key = issue.code;
     }
-    return { message: t(key as any, issue as any) ?? ctx.defaultError };
+    
+    return {
+      message: t(key, issue as any)?.toString() ?? ctx.defaultError,
+    };
   };
 };
