@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,13 +14,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { FormProvider, useForm } from "react-hook-form";
+import { FieldErrors, FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useLocale } from "next-intl";
 import { setUserLocale } from "@/i18n/locale";
 import type { Locale } from "@/i18n/config";
 
-import { resolver, FormValues, EmployeeTypeEnum } from "./form.schema";
+import {
+  resolver,
+  FormValues,
+  EmployeeTypeEnum,
+  useFormStore,
+} from "./form.schema";
 import {
   RenderAddress,
   RenderCountry,
@@ -29,6 +34,7 @@ import {
   RenderSalary,
 } from "./form";
 import { emptyAddressSchema } from "./internal_page";
+import { Alert } from "@/components/ui/alert";
 
 export default function FormPage() {
   const locale = useLocale();
@@ -63,7 +69,7 @@ export default function FormPage() {
     },
     resolver,
   });
-  const { clearErrors, reset } = methods;
+  const { reset, register, handleSubmit } = methods;
   const prefillData = useCallback(() => {
     return reset(
       (data) => ({
@@ -107,10 +113,6 @@ export default function FormPage() {
     render.current += 1;
   });
 
-  useEffect(() => {
-    return () => clearErrors();
-  }, [locale, clearErrors]);
-
   return (
     <FormProvider {...methods}>
       <div className="container mx-auto space-y-3 pb-20">
@@ -120,6 +122,20 @@ export default function FormPage() {
         <Card>
           <CardHeader className="">
             <div>
+              <Alert variant="destructive">
+                <p>
+                  1 กดปุ่ม submit แล้วเปลี่ยนภาษา : รองรับ error message
+                  หลายภาษา
+                </p>
+                <p>
+                  2 กดปุ่ม Prefill Data, กด submit : ข้อมูล result ตาม schema
+                  model
+                </p>
+                <p>
+                  3 ข้อมูล list, หากระบุข้อมูลอย่างใดอย่างนึงจะมี
+                  validation
+                </p>
+              </Alert>
               <Label htmlFor="locale">Change Language</Label>
               <Select
                 name="locale"
@@ -154,7 +170,7 @@ export default function FormPage() {
           <CardContent>
             <form
               className="w-full space-y-4"
-              onSubmit={methods.handleSubmit(
+              onSubmit={handleSubmit(
                 (data) => {
                   console.log(data);
                   toast.success(
@@ -181,12 +197,13 @@ export default function FormPage() {
                   );
                 },
                 (error) => {
+                  useFormStore.getState().saveError(error);
                   console.log(error);
                   toast.error("Invalid validation");
                 }
               )}
             >
-              <RenderDetail register={methods.register} />
+              <RenderDetail register={register} />
               <Separator />
 
               <RenderCountry />

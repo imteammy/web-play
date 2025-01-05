@@ -37,9 +37,9 @@ export const useCreateCustomErrorMap = (): z.ZodErrorMap => {
       default:
         key = issue.code;
     }
-    
+
     return {
-      message: t(key, issue as any)?.toString() ?? ctx.defaultError,
+      message: `${key}||${JSON.stringify(issue)}`,
     };
   };
 };

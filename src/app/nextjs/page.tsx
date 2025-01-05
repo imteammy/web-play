@@ -101,19 +101,19 @@ function Form() {
 
         <Input
           className="w-fit size-5"
-          id="cors"
-          type="checkbox"
-          {...register("cors")}
-        />
-        <Label htmlFor="cors">Cors</Label>
-
-        <Input
-          className="w-fit size-5"
           id="authorization_header"
           type="checkbox"
           {...register("authorization_header")}
         />
         <Label htmlFor="authorization_header">Authorization Header</Label>
+
+        <Input
+          className="w-fit size-5"
+          id="cors"
+          type="checkbox"
+          {...register("cors")}
+        />
+        <Label htmlFor="cors">Cors</Label>
 
         <Input
           className="w-fit size-5"
@@ -126,23 +126,20 @@ function Form() {
       <WatchRender
         name="cors"
         control={control}
-        render={(cors) => {
-          if (!cors) return null;
-          return (
-            <>
-              <Label htmlFor="cors_url">Url orgin</Label>
-              <Input
-                placeholder="Origin"
-                id="cors_url"
-                className={cn(cors ? "" : "hidden")}
-                {...register("cors_url")}
-              />
-            </>
-          );
+        render={({ values }) => {
+          return values ?
+              <>
+                <Label htmlFor="cors_url">Url orgin</Label>
+                <Input
+                  placeholder="Origin"
+                  id="cors_url"
+                  className={cn(values ? "" : "hidden")}
+                  {...register("cors_url")}
+                />
+              </>
+            : null;
         }}
       />
-
-      <div></div>
     </>
   );
 }
