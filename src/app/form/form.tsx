@@ -547,12 +547,22 @@ export function RenderDetail() {
   );
 
   const handleBackupEmailFill = (value: string) => {
+    if (!getValues("same_email")) {
+      return;
+    }
+
     setValue("backup_email", value, {
       shouldDirty: false,
       shouldTouch: false,
       shouldValidate: getFieldState("backup_email", formState).invalid,
     });
   };
+
+  const [show_password, same_email] = useWatch({
+    control,
+    defaultValue: getValues(),
+    name: ["show_password", "same_email"],
+  });
   return (
     <>
       <div className="flex gap-2 w-full">
@@ -580,53 +590,47 @@ export function RenderDetail() {
         <Input id="username" {...register("username")} placeholder="Username" />
         <FormError name="username" />
       </div>
-      <WatchRender
-        control={control}
-        name={"show_password"}
-        defaultValue={true}
-        render={function ({ values: show_password }) {
-          return (
-            <div className="flex gap-2 w-full">
-              <div className="w-full">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type={show_password ? "text" : "password"}
-                  {...register("password", {
-                    onChange(event) {
-                      const s = state();
-                      if (!s.password.invalid && s.password_confirm.invalid) {
-                        trigger("password_confirm");
-                      }
-                    },
-                  })}
-                  placeholder="password"
-                />
-                <FormError name="password" />
-              </div>
-              <div className="w-full">
-                <Label htmlFor="password_confirm">Password confirm</Label>
-                <Input
-                  type={show_password ? "text" : "password"}
-                  id="password_confirm"
-                  {...register("password_confirm")}
-                  placeholder="password confirm"
-                />
-                <FormError name="password_confirm" />
-              </div>
-            </div>
-          );
-        }}
-      />
+      <div className="flex gap-2 w-full">
+        <div className="w-full">
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            type={show_password ? "text" : "password"}
+            {...register("password", {
+              onChange(event) {
+                const s = state();
+                if (!s.password.invalid && s.password_confirm.invalid) {
+                  trigger("password_confirm");
+                }
+              },
+            })}
+            placeholder="password"
+          />
+          <FormError name="password" />
+        </div>
+        <div className="w-full">
+          <Label htmlFor="password_confirm">Password confirm</Label>
+          <Input
+            type={show_password ? "text" : "password"}
+            id="password_confirm"
+            {...register("password_confirm")}
+            placeholder="password confirm"
+          />
+          <FormError name="password_confirm" />
+        </div>
+      </div>
       <div className="w-full">
         <Label htmlFor="email">Email</Label>
         <Input
           id="email"
-          {...register("email")}
-          onChange={(e) => {
-            handleBackupEmailFill(e.target.value);
-          }}
-          onBlur={(e) => handleBackupEmailFill(e.target.value)}
+          {...register("email", {
+            onChange(event) {
+              handleBackupEmailFill(event.target.value);
+            },
+            onBlur(event) {
+              handleBackupEmailFill(event.target.value);
+            },
+          })}
           placeholder="Email"
         />
         <FormError name="email" />
@@ -646,22 +650,16 @@ export function RenderDetail() {
         <Label htmlFor="same_email">Use same Email</Label>
       </div>
 
-      <WatchRender
-        control={control}
-        name="same_email"
-        render={({ values: same_email }) => (
-          <div className="w-full">
-            <Label htmlFor="backup_email">Backup backup_email</Label>
-            <Input
-              disabled={same_email}
-              id="backup_email"
-              {...register("backup_email")}
-              placeholder="Backup email"
-            />
-            <FormError name="backup_email" />
-          </div>
-        )}
-      />
+      <div className="w-full">
+        <Label htmlFor="backup_email">Backup backup_email</Label>
+        <Input
+          disabled={same_email}
+          id="backup_email"
+          {...register("backup_email")}
+          placeholder="Backup email"
+        />
+        <FormError name="backup_email" />
+      </div>
     </>
   );
 }

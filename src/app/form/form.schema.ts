@@ -77,8 +77,8 @@ const schema = z
     username: z.string().trim().min(6).max(255),
     password: z.string().trim().min(6).max(255),
     password_confirm: z.string().trim().min(6).max(255),
-    email: z.string().trim().email().max(255),
-    backup_email: z.string().trim().email().max(255),
+    email: z.string().trim().email().min(1),
+    backup_email: z.string().trim().email().min(1),
     same_email: z.boolean(),
     country: z.string().trim().nonempty().max(255),
     address: addressSchema.or(emptyAddressSchema).array().max(50),
@@ -87,10 +87,18 @@ const schema = z
     message: "customValidation.confirmPassword_match",
     path: ["password_confirm"],
   })
-  .refine((v) => v.same_email && v.email === v.backup_email, {
-    message: "customValidation.email_not_match",
-    path: ["backup_email"],
-  })
+  .refine(
+    (v) => {
+      if (v.same_email) {
+        return v.email === v.backup_email;
+      }
+      return true;
+    },
+    {
+      message: "customValidation.email_not_match",
+      path: ["backup_email"],
+    }
+  )
   .and(paymentSchema)
   .and(saralySchema);
 
