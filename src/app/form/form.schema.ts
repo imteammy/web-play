@@ -23,9 +23,9 @@ const paymentSchema = z.discriminatedUnion("type", [
 ]);
 
 const addressSchema = z.object({
-  province: z.string().nonempty().min(1),
-  district: z.string().nonempty().min(1),
-  subdistrict: z.string().nonempty().min(1),
+  province: z.string().nonempty().min(1).max(255),
+  district: z.string().nonempty().min(1).max(255),
+  subdistrict: z.string().nonempty().min(1).max(255),
   zipcode: z.string().nonempty().min(5).max(5),
 });
 type AddressData = z.infer<typeof addressSchema>;
@@ -72,16 +72,34 @@ const emptyAddressSchema = z.object({
 
 const schema = z
   .object({
-    first_name: z.string().trim().nonempty(),
-    last_name: z.string().trim().nonempty(),
-    email: z.string().trim().email(),
-    country: z.string().trim().nonempty(),
-    address: addressSchema.or(emptyAddressSchema).array(),
+    first_name: z.string().trim().nonempty().max(255),
+    last_name: z.string().trim().nonempty().max(255),
+    username: z.string().trim().min(6).max(255),
+    password: z.string().trim().min(6).max(255),
+    password_confirm: z.string().trim().min(6).max(255),
+    email: z.string().trim().email().max(255),
+    backup_email: z.string().trim().email().max(255),
+    same_email: z.boolean(),
+    country: z.string().trim().nonempty().max(255),
+    address: addressSchema.or(emptyAddressSchema).array().max(50),
+  })
+  .refine((v) => v.password === v.password_confirm, {
+    message: "customValidation.confirmPassword_match",
+    path: ["password_confirm"],
+  })
+  .refine((v) => v.same_email && v.email === v.backup_email, {
+    message: "customValidation.email_not_match",
+    path: ["backup_email"],
   })
   .and(paymentSchema)
   .and(saralySchema);
 
-export type FormValues = z.infer<typeof schema>;
+type InterRefFormValue = {
+  show_password: boolean;
+  enable_watch: boolean;
+};
+
+export type FormValues = z.infer<typeof schema> & InterRefFormValue;
 export const resolver = zodResolver(schema);
 
 type FormStoreState = {

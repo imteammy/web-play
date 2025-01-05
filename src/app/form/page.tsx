@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { FieldErrors, FormProvider, useForm } from "react-hook-form";
+import { FieldErrors, FormProvider, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { useLocale } from "next-intl";
 import { setUserLocale } from "@/i18n/locale";
@@ -35,6 +35,7 @@ import {
 } from "./form";
 import { emptyAddressSchema } from "./internal_page";
 import { Alert } from "@/components/ui/alert";
+import { WatchRender } from "@/components/design/watch-render";
 
 export default function FormPage() {
   const locale = useLocale();
@@ -58,25 +59,36 @@ export default function FormPage() {
       cvv: "",
       cardNumber: "",
       country: "",
-      daily_rate: NaN,
-      daily_rate_half: NaN,
-      daily_weekend_rate: NaN,
-      daily_weekend_rate_half: NaN,
-      hour_rate: NaN,
-      hour_rate_half: NaN,
-      hour_weekend_rate: NaN,
-      hour_weekend_rate_half: NaN,
+      daily_rate: undefined,
+      daily_rate_half: undefined,
+      daily_weekend_rate: undefined,
+      daily_weekend_rate_half: undefined,
+      hour_rate: undefined,
+      hour_rate_half: undefined,
+      hour_weekend_rate: undefined,
+      hour_weekend_rate_half: undefined,
     },
     resolver,
+    mode: "onTouched",
+    reValidateMode: "onBlur",
   });
-  const { reset, register, handleSubmit } = methods;
+  const { getValues, control, reset, register, handleSubmit, watch } = methods;
   const prefillData = useCallback(() => {
     return reset(
       (data) => ({
         ...data,
         first_name: "John",
         last_name: "Doe",
+
+        username: "user_test",
+        password: "1234567890",
+        password_confirm: "1234567890",
+
         email: "john@email.com",
+        backup_email: "john@email.com",
+        same_email: true,
+        enable_watch: false,
+        show_password: true,
         country: "Thailand",
         cardNumber: "1234567890123456",
         cvv: "123",
@@ -113,6 +125,8 @@ export default function FormPage() {
     render.current += 1;
   });
 
+  useWatch({ control, disabled: !watch("enable_watch", false) });
+
   return (
     <FormProvider {...methods}>
       <div className="container mx-auto space-y-3 pb-20">
@@ -132,8 +146,11 @@ export default function FormPage() {
                   model
                 </p>
                 <p>
-                  3 ข้อมูล list, หากระบุข้อมูลอย่างใดอย่างนึงจะมี
-                  validation
+                  3 ข้อมูล list, หากระบุข้อมูลอย่างใดอย่างนึงจะมี validation
+                </p>
+                <p>
+                  4 Enable watch(), เปิดใช้งานแล้วลองกรอกข้อมูลแล้วดูที่ Parent
+                  Render Count เปรียบเทียบกับขณะไม่เปิดใช้งาน
                 </p>
               </Alert>
               <Label htmlFor="locale">Change Language</Label>
@@ -166,6 +183,24 @@ export default function FormPage() {
                 Reset to default
               </Button>
             </div>
+            <div className="flex gap-4 items-center">
+              <Input
+                type="checkbox"
+                className="w-fit"
+                id="show_password"
+                {...register("show_password", { value: true })}
+              />
+              <Label htmlFor="show_password">Show Password</Label>
+            </div>
+            <div className="flex gap-4 items-center">
+              <Input
+                type="checkbox"
+                className="w-fit"
+                id="enable_watch"
+                {...register("enable_watch", { value: false })}
+              />
+              <Label htmlFor="enable_watch">Enable watch()</Label>
+            </div>
           </CardHeader>
           <CardContent>
             <form
@@ -181,8 +216,10 @@ export default function FormPage() {
                           {JSON.stringify(
                             {
                               ...data,
-                              address: data.address.filter(
-                                (e) => !emptyAddressSchema.safeParse(e).success
+                              address: data.address.map((e) =>
+                                emptyAddressSchema.safeParse(e).success ?
+                                  null
+                                : e
                               ),
                             },
                             null,
@@ -203,7 +240,7 @@ export default function FormPage() {
                 }
               )}
             >
-              <RenderDetail register={register} />
+              <RenderDetail />
               <Separator />
 
               <RenderCountry />

@@ -10,34 +10,34 @@
     "unrecognized_keys": "Unrecognized key(s) in object: {- keys}",
     "unrecognized_keys_one": "Unrecognized key in object: {- keys}",
     "unrecognized_keys_other": "Unrecognized keys in object: {- keys}",
-    "invalid_union": "Invalid input",
+    "invalid_union": "ข้อมูลไม่ถูกต้อง",
     "invalid_union_discriminator": "Invalid discriminator value. Expected {- options}",
     "invalid_enum_value": "Invalid enum value. Expected {- options}, received {received}",
     "invalid_arguments": "Invalid function arguments",
     "invalid_return_type": "Invalid function return type",
-    "invalid_date": "Invalid date",
-    "custom": "Invalid input",
+    "invalid_date": "วันที่ไม่ถูกต้อง",
+    "custom": "ข้อมูลไม่ถูกต้อง",
     "invalid_intersection_types": "Intersection results could not be merged",
     "not_multiple_of": "Number must be a multiple of {multipleOf}",
     "not_finite": "Number must be finite",
     "invalid_string": {
       "email": "อีเมล์ไม่ถูกต้อง",
       "url": "URL ไม่ถูกต้อง",
-      "uuid": "Invalid {validation}",
-      "cuid": "Invalid {validation}",
-      "regex": "Invalid",
-      "datetime": "Invalid {validation}",
+      "uuid": "UUID ไม่ถูกต้อง",
+      "cuid": "CUID ไม่ถูกต้อง",
+      "regex": "Invalid Regex",
+      "datetime": "ข้อมูลวันที่ไม่ถูกต้อง",
       "startsWith": "ข้อมูลไม่ถูกต้อง: ข้อมูลต้องเริ่มตั้นด้วย {startsWith}",
       "endsWith": "ข้อมูลไม่ถูกต้อง: ข้อมูลต้องลงท้ายด้วย {endsWith}"
     },
     "too_small": {
       "array": {
-        "inclusive": "Array must contain at least {minimum} element(s)",
-        "inclusive_one": "Array must contain at least {minimum} element",
-        "inclusive_other": "Array must contain at least {minimum} elements",
-        "not_inclusive": "Array must contain more than {minimum} element(s)",
-        "not_inclusive_one": "Array must contain more than {minimum} element",
-        "not_inclusive_other": "Array must contain more than {minimum} elements"
+        "inclusive": "อาร์เรย์จะต้องมีข้อมูลอย่างน้อย {minimum} รายการ",
+        "inclusive_one": "อาร์เรย์จะต้องมีข้อมูลอย่างน้อย {minimum} รายการ",
+        "inclusive_other": "อาร์เรย์จะต้องมีข้อมูลอย่างน้อย {minimum} รายการ",
+        "not_inclusive": "อาร์เรย์จะต้องมีข้อมูลมากกว่า {minimum} รายการ",
+        "not_inclusive_one": "อาร์เรย์จะต้องมีข้อมูลมากกว่า {minimum} รายการ",
+        "not_inclusive_other": "อาร์เรย์จะต้องมีข้อมูลมากกว่า {minimum} รายการ"
       },
       "string": {
         "inclusive": "กรุณาระบุตัวอักษรอย่างน้อย {minimum} ตัวอักษร",
@@ -54,18 +54,18 @@
         "not_inclusive_with_path_other": "{path} must contain over {minimum} characters"
       },
       "number": {
-        "inclusive": "Number must be greater than or equal to {minimum}",
-        "inclusive_with_path": "{path} must be greater than or equal to {minimum}",
-        "not_inclusive": "Number must be greater than {minimum}",
-        "not_inclusive_with_path": "{path} must be greater than {minimum}"
+        "inclusive": "จำนวนต้องมากกว่าหรือเท่ากับ {minimum}",
+        "inclusive_with_path": "{path} จะต้องมากกว่าหรือเท่ากับ {minimum}",
+        "not_inclusive": "จำนวนจะต้องมากกว่า",
+        "not_inclusive_with_path": "{path} จะต้องมากกว่า {minimum}"
       },
       "set": {
         "inclusive": "Invalid input",
         "not_inclusive": "Invalid input"
       },
       "date": {
-        "inclusive": "Date must be greater than or equal to {- minimum, datetime}",
-        "not_inclusive": "Date must be greater than {- minimum, datetime}"
+        "inclusive": "วันที่ต้องมากกว่าหรือเท่ากับ {- minimum, datetime}",
+        "not_inclusive": "วันที่ต้องมากกว่า {- minimum, datetime}"
       }
     },
     "too_big": {
@@ -78,9 +78,9 @@
         "not_inclusive_other": "Array must contain less than {maximum} elements"
       },
       "string": {
-        "inclusive": "String must contain at most {maximum} character(s)",
-        "inclusive_one": "String must contain at most {maximum} character",
-        "inclusive_other": "String must contain at most {maximum} characters",
+        "inclusive": "กรุณาระบุตัวอักษรไม่เกิน {maximum} ตัวอักษร",
+        "inclusive_one": "กรุณาระบุตัวอักษรไม่เกิน {maximum} ตัวอักษร",
+        "inclusive_other": "กรุณาระบุตัวอักษรไม่เกิน {maximum} ตัวอักษร",
         "inclusive_with_path": "{path} must contain at most {maximum} character(s)",
         "inclusive_with_path_one": "{path} must contain at most {maximum} character",
         "inclusive_with_path_other": "{path} must contain at most {maximum} characters",
@@ -92,22 +92,23 @@
         "not_inclusive_with_path_other": "{path} must contain under {maximum} characters"
       },
       "number": {
-        "inclusive": "Number must be less than or equal to {maximum}",
-        "inclusive_with_path": "{path} must be less than or equal to {maximum}",
-        "not_inclusive": "Number must be less than {maximum}",
-        "not_inclusive_with_path": "{path} must be less than {maximum}"
+        "inclusive": "จำนวนจะต้องน้อยกว่าหรือเท่ากับ {maximum}",
+        "inclusive_with_path": "{path} ต้องน้อยกว่าหรือเท่ากับ {maximum}",
+        "not_inclusive": "จำนวนจะต้องน้อยกว่า {maximum}",
+        "not_inclusive_with_path": "{path} ต้องน้อยกว่า {maximum}"
       },
       "set": {
         "inclusive": "Invalid input",
         "not_inclusive": "Invalid input"
       },
       "date": {
-        "inclusive": "Date must be smaller than or equal to {- maximum, datetime}",
-        "not_inclusive": "Date must be smaller than {- maximum, datetime}"
+        "inclusive": "วันที่ต้องน้อยกว่าหรือเท่ากับ {- maximum, datetime}",
+        "not_inclusive": "วันที่จะต้องมีขนาดน้อยกว่า {- maximum, datetime}"
       }
     },
     "customValidation": {
-      "confirmPassword_match": "Passwords do not match"
+      "confirmPassword_match": "รหัสผ่านไม่ตรงกัน",
+      "email_not_match": "อีเมล์ไม่ตรงกัน"
     }
   }
 }
