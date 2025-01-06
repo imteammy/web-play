@@ -43,9 +43,7 @@ export default async function RootLayout({
           timeZone="Asia/Bangkok"
           now={new Date()}
         >
-          <Provider>
-            <BaseLayout>{children}</BaseLayout>
-          </Provider>
+          <Provider>{children}</Provider>
         </NextIntlClientProvider>
       </body>
     </html>

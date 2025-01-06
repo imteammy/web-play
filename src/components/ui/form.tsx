@@ -14,6 +14,7 @@ import {
 
 import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
+import { useTranslations } from "next-intl"
 
 const Form = FormProvider
 
@@ -146,12 +147,12 @@ const FormMessage = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, children, ...props }, ref) => {
+  const t = useTranslations("zod");
   const { error, formMessageId } = useFormField()
-  const body = error ? String(error?.message) : children
 
-  if (!body) {
-    return null
-  }
+  const message = error?.message;
+  if (!message) return null;
+  const [smg, params] = message.split("||");
 
   return (
     <p
@@ -160,7 +161,7 @@ const FormMessage = React.forwardRef<
       className={cn("text-[0.8rem] font-medium text-destructive", className)}
       {...props}
     >
-      {body}
+       {t(smg as any, JSON.parse(params || "{}"))}
     </p>
   )
 })

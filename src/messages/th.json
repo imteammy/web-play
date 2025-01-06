@@ -108,7 +108,40 @@
     },
     "customValidation": {
       "confirmPassword_match": "รหัสผ่านไม่ตรงกัน",
-      "email_not_match": "อีเมล์ไม่ตรงกัน"
+      "email_not_match": "อีเมล์ไม่ตรงกัน",
+      "required_contry": "กรุณาระบุประเทศ"
+    }
+  },
+  "form": {
+    "basic": {
+      "detail": "ข้อมูล",
+      "add_detail": "เพิ่มข้อมูล"
+    },
+    "label": {
+      "username": "ชื่อผู้ใช้",
+      "email": "อีเมล์",
+      "password": "รหัสผ่าน",
+      "firstname": "ชื่อจริง",
+      "lastname": "นามสกุล",
+      "country": "ประเทศ",
+      "employee_type": "ประเภทพนักงาน",
+      "payment_type": "รูปแบบการจ่ายเงิน",
+      "password_confirm": "รหัสผ่านยืนยัน",
+      "province": "จังหวัด",
+      "district": "อำเภอ",
+      "subdistrict": "ตำบล",
+      "zipcode": "รหัสไปรษณีย์",
+      "remove": "ลบ",
+      "reset": "รีเซ็ต",
+      "submit": "ยืนยัน"
+    },
+    "placeholder": {
+      "please_specify": "กรุณาระบุ",
+      "required": "กรุณาระบุ",
+      "required_province": "กรุณาระบุจังหวัด",
+      "required_district": "กรุณาระบุอำเภอ",
+      "required_subdistrict": "กรุณาระบุตำบล",
+      "required_zipcode": "กรุณาระบุรหัสไปรษณีย์"
     }
   }
 }

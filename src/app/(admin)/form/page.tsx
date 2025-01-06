@@ -1,5 +1,11 @@
 "use client";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,9 +20,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { FieldErrors, FormProvider, useForm, useWatch } from "react-hook-form";
+import {
+  Controller,
+  FieldErrors,
+  FormProvider,
+  useForm,
+  useWatch,
+  Mode,
+} from "react-hook-form";
 import { toast } from "sonner";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { setUserLocale } from "@/i18n/locale";
 import type { Locale } from "@/i18n/config";
 
@@ -25,6 +38,7 @@ import {
   FormValues,
   EmployeeTypeEnum,
   useFormStore,
+  emptyAddressSchema,
 } from "./form.schema";
 import {
   RenderAddress,
@@ -33,20 +47,30 @@ import {
   RenderPayment,
   RenderSalary,
 } from "./form";
-import { emptyAddressSchema } from "./internal_page";
 import { Alert } from "@/components/ui/alert";
-import { WatchRender } from "@/components/design/watch-render";
 
 export default function FormPage() {
   const locale = useLocale();
+  const reRender = useReducer(() => ({}), {})[1];
   const render = useRef(0);
-
+  const tl = useTranslations("form.label");
+  const [mode, setMode] = useState<Mode | (string & {})>("onTouched");
+  const [reValidateMode, setReValidateMode] = useState<
+    Exclude<Mode, "onTouched" | "all"> | (string & {})
+  >("onBlur");
   const methods = useForm<FormValues>({
     defaultValues: {
       first_name: "",
       last_name: "",
       email: "",
       type: "credit",
+      backup_email: "",
+      enable_watch: false,
+      username: "",
+      password: "",
+      password_confirm: "",
+      same_email: false,
+      show_password: true,
       address: [
         {
           province: "",
@@ -69,9 +93,10 @@ export default function FormPage() {
       hour_weekend_rate_half: undefined,
     },
     resolver,
-    mode: "onTouched",
-    reValidateMode: "onBlur",
+    mode: mode as Mode,
+    reValidateMode: reValidateMode as "onBlur" | "onChange" | "onSubmit",
   });
+
   const { getValues, control, reset, register, handleSubmit, watch } = methods;
   const prefillData = useCallback(() => {
     return reset(
@@ -134,9 +159,9 @@ export default function FormPage() {
           Parent Render Count {render.current}
         </CardTitle>
         <Card>
-          <CardHeader className="">
-            <div>
-              <Alert variant="destructive">
+          <CardHeader className="space-y-4">
+            <div className="space-y-4">
+              <Alert variant="success" className="leading-5 text-lg">
                 <p>
                   1 กดปุ่ม submit แล้วเปลี่ยนภาษา : รองรับ error message
                   หลายภาษา
@@ -152,23 +177,77 @@ export default function FormPage() {
                   4 Enable watch(), เปิดใช้งานแล้วลองกรอกข้อมูลแล้วดูที่ Parent
                   Render Count เปรียบเทียบกับขณะไม่เปิดใช้งาน
                 </p>
+                <p>
+                  5 Mode, การ validation ข้อมูลที่กรอก ex: onChange - ทำการ
+                  validation ทันที
+                </p>
+                <p>
+                  5 Re validateMode, ทำการ re validation ข้อมูล ที่มี error
+                  ในโหมดต่างๆ :ex onBlur ทำการ re validation input ที่มี error
+                  message ทันทีที่ blur event
+                </p>
               </Alert>
-              <Label htmlFor="locale">Change Language</Label>
-              <Select
-                name="locale"
-                defaultValue={locale}
-                onValueChange={(lang) => {
-                  setUserLocale(lang as Locale);
-                }}
-              >
-                <SelectTrigger id="locale">
-                  <SelectValue placeholder="change language" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="en">English</SelectItem>
-                  <SelectItem value="th">Thai</SelectItem>
-                </SelectContent>
-              </Select>
+              <div>
+                <Label htmlFor="locale">Change Language</Label>
+                <Select
+                  name="locale"
+                  defaultValue={locale}
+                  onValueChange={(lang) => {
+                    setUserLocale(lang as Locale);
+                  }}
+                >
+                  <SelectTrigger id="locale">
+                    <SelectValue placeholder="change language" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="en">English</SelectItem>
+                    <SelectItem value="th">Thai</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor={"mode"}>Mode (สำหรับทำการ validation)</Label>
+                <Select
+                  name={"mode"}
+                  onValueChange={setMode}
+                  defaultValue={mode}
+                >
+                  <SelectTrigger id={"mode"}>
+                    <SelectValue placeholder="Mode" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {["onBlur", "onChange", "onSubmit", "onTouched", "all"].map(
+                      (value) => (
+                        <SelectItem key={value} value={value}>
+                          {value}
+                        </SelectItem>
+                      )
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="reValidateMode">
+                  Re ValidateMode (สำหรับทำการ re validation input ที่มี error )
+                </Label>
+                <Select
+                  name="reValidateMode"
+                  onValueChange={setReValidateMode}
+                  defaultValue={reValidateMode}
+                >
+                  <SelectTrigger id="reValidateMode">
+                    <SelectValue placeholder="Mode" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {["onBlur", "onSubmit", "onTouched"].map((value) => (
+                      <SelectItem key={value} value={value}>
+                        {value}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
             <div className="flex gap-2">
               <Button type="button" onClick={prefillData}>
@@ -182,13 +261,22 @@ export default function FormPage() {
               >
                 Reset to default
               </Button>
+              <Button
+                type="button"
+                onClick={() => {
+                  render.current = 0;
+                  reRender();
+                }}
+              >
+                Reset Render Count
+              </Button>
             </div>
             <div className="flex gap-4 items-center">
               <Input
                 type="checkbox"
                 className="w-fit"
                 id="show_password"
-                {...register("show_password", { value: true })}
+                {...register("show_password")}
               />
               <Label htmlFor="show_password">Show Password</Label>
             </div>
@@ -256,7 +344,7 @@ export default function FormPage() {
               <Separator />
 
               <div className="my-2">
-                <Button type="submit">Submit</Button>
+                <Button type="submit">{tl("submit")}</Button>
               </div>
               {/* <RenderValues control={methods.control} /> */}
             </form>

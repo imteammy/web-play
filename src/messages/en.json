@@ -108,7 +108,40 @@
     },
     "customValidation": {
       "confirmPassword_match": "Passwords do not match",
-      "email_not_match": "Email do not match"
+      "email_not_match": "Email do not match",
+      "required_contry": "Country is required"
+    }
+  },
+  "form": {
+    "basic": {
+      "detail": "Detail",
+      "add_detail": "Add detail"
+    },
+    "label": {
+      "username": "Username",
+      "email": "Email",
+      "password": "Password",
+      "firstname": "First name",
+      "lastname": "Last name",
+      "country": "Country",
+      "employee_type": "Employee type",
+      "payment_type": "Payment type",
+      "password_confirm": "Password confirm",
+      "province": "Province",
+      "district": "District",
+      "subdistrict": "Subdistrict",
+      "zipcode": "Zipcode",
+      "remove": "Remove",
+      "reset": "Reset",
+      "submit": "Submit"
+    },
+    "placeholder": {
+      "please_specify": "Please specify",
+      "required": "Required",
+      "required_province": "Required province",
+      "required_district": "Required district",
+      "required_subdistrict": "Required subdistrict",
+      "required_zipcode": "Required zipcode"
     }
   }
 }

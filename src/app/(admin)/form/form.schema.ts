@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FieldErrors } from "react-hook-form";
+import { FieldErrors, Mode } from "react-hook-form";
 import { z } from "zod";
 import { createWithEqualityFn as create } from "zustand/traditional";
 import { persist } from "zustand/middleware";
@@ -31,7 +31,7 @@ const addressSchema = z.object({
 type AddressData = z.infer<typeof addressSchema>;
 type AddressDataEmpty = z.infer<typeof emptyAddressSchema>;
 
-const saralySchema = z.discriminatedUnion("employee_type", [
+export const saralySchema = z.discriminatedUnion("employee_type", [
   z.object({
     employee_type: z.literal(EmployeeTypeEnum.DAILY),
     amount: z.number().int(),
@@ -63,14 +63,14 @@ const saralySchema = z.discriminatedUnion("employee_type", [
   }),
 ]);
 
-const emptyAddressSchema = z.object({
+export const emptyAddressSchema = z.object({
   province: z.literal(""),
   district: z.literal(""),
   subdistrict: z.literal(""),
   zipcode: z.literal(""),
 });
 
-const schema = z
+export const schema = z
   .object({
     first_name: z.string().trim().nonempty().max(255),
     last_name: z.string().trim().nonempty().max(255),
@@ -80,7 +80,14 @@ const schema = z
     email: z.string().trim().email().min(1),
     backup_email: z.string().trim().email().min(1),
     same_email: z.boolean(),
-    country: z.string().trim().nonempty().max(255),
+    country: z
+      .string({
+        required_error: "customValidation.required_contry",
+        invalid_type_error: "customValidation.required_contry",
+      })
+      .trim()
+      .nonempty("customValidation.required_contry")
+      .max(255),
     address: addressSchema.or(emptyAddressSchema).array().max(50),
   })
   .refine((v) => v.password === v.password_confirm, {
