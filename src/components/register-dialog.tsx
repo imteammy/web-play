@@ -70,7 +70,7 @@ export function RegisterDialog() {
       }}
     >
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm">
+        <Button variant="ghost" size="sm" type="button" className="w-full">
           Register
         </Button>
       </DialogTrigger>

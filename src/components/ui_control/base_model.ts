@@ -18,7 +18,7 @@ interface BaseControlProps<
   >;
   shouldUnregister?: boolean;
   defaultValue?: FieldPathValue<TFieldValues, TName>;
-  control?: Control<TFieldValues, any> & {};
+  control?: Control<TFieldValues, any>;
   disabled?: boolean;
   readOnly?: boolean;
   label?: string;
@@ -32,6 +32,10 @@ interface BaseControlProps<
   };
   placeholder?: string;
   description?: string;
+  min?: number | string | undefined;
+  minLength?: number | undefined;
+  max?: number | string | undefined;
+  maxLength?: number | undefined;
 }
 
 export interface SelectControlProps<
@@ -53,4 +57,12 @@ export interface InputControlProps<
   type?: HTMLInputTypeAttribute;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
+}
+export interface TextAreaControlProps<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends Path<TFieldValues> = Path<TFieldValues>,
+> extends Omit<BaseControlProps<TFieldValues, TName>, "min" | "max"> {
+  type?: HTMLInputTypeAttribute;
+  onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
+  onBlur?: React.FocusEventHandler<HTMLTextAreaElement>;
 }

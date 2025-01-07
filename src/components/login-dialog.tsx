@@ -59,7 +59,7 @@ export function LoginDialog() {
       }}
     >
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm">
+        <Button variant="ghost" size="sm" type="button" className="w-full">
           Login
         </Button>
       </DialogTrigger>

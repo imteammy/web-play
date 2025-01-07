@@ -1,11 +1,5 @@
-import React, { HTMLInputTypeAttribute, Ref } from "react";
-import {
-  type Control,
-  FieldPathValue,
-  FieldValues,
-  Path,
-  RegisterOptions,
-} from "react-hook-form";
+import type { Ref } from "react";
+import type { FieldValues, Path } from "react-hook-form";
 import {
   FormControl,
   FormDescription,
@@ -14,14 +8,14 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { Input } from "../ui/input";
 import { cn } from "@/lib/utils";
-import { InputControlProps } from "./base_model";
+import type { TextAreaControlProps } from "./base_model";
 import { useTranslations } from "next-intl";
+import { Textarea } from "../ui/textarea";
 import { fixedForwardRef } from "@/hooks/fixedForwardRef";
 import { mergeRef } from "@/hooks/merge-ref";
 
-function InputControlInner<
+function TextAreaControlInner<
   TFieldValues extends FieldValues = FieldValues,
   TName extends Path<TFieldValues> = Path<TFieldValues>,
 >(
@@ -37,16 +31,13 @@ function InputControlInner<
     type,
     readOnly,
     required,
-    min,
     minLength,
-    max,
     maxLength,
     ...props
-  }: InputControlProps<TFieldValues, TName>,
-  ref: Ref<HTMLInputElement>
+  }: TextAreaControlProps<TFieldValues, TName>,
+  ref: Ref<HTMLTextAreaElement>
 ) {
-  const _defaultValue: any =
-    defaultValue ?? (type === "number" ? undefined : "");
+  const _defaultValue: any = defaultValue ?? "";
   const t = useTranslations("form.placeholder");
   return (
     <FormField
@@ -68,17 +59,14 @@ function InputControlInner<
               </FormLabel>
             )}
             <FormControl>
-              <Input
+              <Textarea
                 readOnly={readOnly}
-                type={type}
                 id={id ?? field.name}
                 data-test-id={field.name}
                 required={required}
                 value={field.value}
                 ref={mergeRef(field.ref, ref)}
-                min={min}
                 minLength={minLength}
-                max={max}
                 maxLength={maxLength}
                 aria-invalid={invalid ? "true" : undefined}
                 disabled={field.disabled}
@@ -92,9 +80,7 @@ function InputControlInner<
                 )}
                 onChange={(e) => {
                   props.onChange?.(e);
-                  field.onChange(
-                    type === "number" ? e.target.valueAsNumber : e
-                  );
+                  field.onChange();
                 }}
                 onBlur={(e) => {
                   props.onBlur?.(e);
@@ -115,4 +101,4 @@ function InputControlInner<
   );
 }
 
-export const InputControl = fixedForwardRef(InputControlInner);
+export const TextAreaControl = fixedForwardRef(TextAreaControlInner);
