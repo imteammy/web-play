@@ -3,7 +3,6 @@ import React, { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FormError } from "@/components/form-error";
 import {
   Select,
   SelectContent,
@@ -30,6 +29,7 @@ import { InputControl } from "@/components/ui_control/input";
 import { SelectControl } from "@/components/ui_control/select";
 import { useLocale, useTranslations } from "next-intl";
 import type { Locale } from "@/i18n/config";
+import { FormError } from "@/components/ui_control/form-error";
 export function RenderValues({ control }: { control?: any }) {
   const values = useWatch({ control });
   return <pre>{JSON.stringify(values, null, 2)}</pre>;
@@ -289,7 +289,7 @@ export function RenderInnerAddress({
           >
             {tl("reset")}
           </Button>
-        : <Button
+          : <Button
             type="button"
             onClick={() => {
               remove(index);
@@ -388,6 +388,8 @@ export function RenderSalary() {
                   Math.trunc(event.target.value / 2),
                   {
                     shouldValidate: daily_rate_half_state.invalid,
+                    shouldDirty: false,
+                    shouldTouch: false
                   }
                 );
               },
@@ -449,14 +451,14 @@ export function RenderSalary() {
               },
             }}
             name="hour_rate"
-            label="รายวัน (ครึ่งวัน)"
+            label="รายชั่วโมง (ครึ่งวัน)"
             placeholder="รายชั่วโมง (ครึ่งวัน)"
           />
           <InputControl
             type="number"
             control={control}
             name="hour_rate_half"
-            label="รายวัน (ครึ่งวัน)"
+            label="รายชั่วโมง (ครึ่งวัน)"
             placeholder="รายชั่วโมง (ครึ่งวัน)"
           />
 

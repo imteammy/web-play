@@ -2,9 +2,13 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import {
+  Control,
   FormProvider,
   useForm,
   useFormContext,
+  UseFormRegister,
+  UseFormReturn,
+  UseFormUnregister,
   useWatch,
 } from "react-hook-form";
 import { CopyBlock, dracula } from "react-code-blocks";
@@ -16,6 +20,7 @@ import { Label } from "@radix-ui/react-label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { WatchRender } from "@/components/design/watch-render";
+import { ClientSide } from "@/components/design/client-side";
 
 type FormValues = {
   method: string;
@@ -42,14 +47,17 @@ export default function Page() {
   });
   return (
     <FormProvider {...form}>
-      <Form />
-      <ShowCode />
+      <ClientSide>
+        <Form />
+        <ShowCode />
+      </ClientSide>
     </FormProvider>
   );
 }
 
 function Form() {
-  const { register, control } = useFormContext<FormValues>();
+  const { register, control, unregister, ...form } =
+    useFormContext<FormValues>();
   return (
     <>
       <h1>Nextjs generate routes</h1>
@@ -123,23 +131,53 @@ function Form() {
         />
         <Label htmlFor="params">Params</Label>
       </div>
-      <WatchRender
-        name="cors"
+      <RenderURL
         control={control}
-        render={({ values }) => {
-          return values ?
-              <>
-                <Label htmlFor="cors_url">Url orgin</Label>
-                <Input
-                  placeholder="Origin"
-                  id="cors_url"
-                  className={cn(values ? "" : "hidden")}
-                  {...register("cors_url")}
-                />
-              </>
-            : null;
-        }}
+        register={register}
+        unregister={unregister}
+        getValues={form.getValues}
       />
+    </>
+  );
+}
+
+function RenderURL({
+  control,
+  register,
+  unregister,
+}: {
+  control: Control<FormValues>;
+  register: UseFormRegister<FormValues>;
+  unregister: UseFormUnregister<FormValues>;
+} & Pick<UseFormReturn<FormValues>, "getValues">) {
+  const cors = useWatch({
+    control,
+    name: "cors",
+    exact: true,
+    defaultValue: false,
+  });
+
+  useEffect(() => {
+    return () => {
+      unregister("cors_url", {
+        keepDefaultValue: true,
+      });
+    };
+  }, [cors, unregister]);
+
+  return (
+    <>
+      {cors && (
+        <>
+          <Label htmlFor="cors_url">Url orgin</Label>
+          <Input
+            placeholder="Origin"
+            id="cors_url"
+            className={cn(cors ? "" : "hidden")}
+            {...register("cors_url")}
+          />
+        </>
+      )}
     </>
   );
 }
@@ -155,18 +193,18 @@ function ShowCode() {
       const options = [
         values.params && "const slug = (await params).slug;",
         values.header &&
-          `
+        `
                     const header = await headers();
                     const userAgent = headersList.get("user-agent");
                     const requestHeaders = new Headers(req.headers);
                 `,
         values.token && `const token = res.cookies.get('token');`,
         values.authorization_header &&
-          values.header &&
-          `const authorization = header.get("authorization");`,
+        values.header &&
+        `const authorization = header.get("authorization");`,
         values.authorization_header &&
-          !values.header &&
-          `const header = await headers();
+        !values.header &&
+        `const header = await headers();
           const authorization = header.get("authorization");`,
       ];
 
@@ -193,7 +231,7 @@ function ShowCode() {
     const createParams = () =>
       values.params ?
         ", { params }: { params: Promise<{ slug: string }> }"
-      : "";
+        : "";
 
     const createFunctionTemplate = () => `
             import { NextResponse, type NextRequest } from "next/server";

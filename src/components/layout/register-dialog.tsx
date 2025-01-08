@@ -25,28 +25,39 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { InputControl } from "./ui_control/input";
+import { InputControl } from "../ui_control/input";
+import { toast } from "sonner";
 
-const formSchema = z.object({
-  email: z.string().email(),
-  password: z.string().trim().min(8).max(255),
-});
+const formSchema = z
+  .object({
+    name: z.string().trim().min(2).max(255),
+    email: z.string().trim().email(),
+    password: z.string().trim().min(8).max(255),
+    password_confirm: z.string().trim().min(8).max(255),
+  })
+  .refine((v) => v.password === v.password_confirm, {
+    path: ["password_confirm"],
+    message: "customValidation.confirmPassword_match",
+  });
 
-export function LoginDialog() {
+export function RegisterDialog() {
   const [open, setOpen] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
+      password_confirm: "",
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Handle login logic here
+    // Handle registration logic here
     console.log(values);
     setOpen(false);
+    toast.success("Register Success");
     form.reset();
   }
 
@@ -60,36 +71,48 @@ export function LoginDialog() {
     >
       <DialogTrigger asChild>
         <Button variant="ghost" size="sm" type="button" className="w-full">
-          Login
+          Register
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Login</DialogTitle>
+          <DialogTitle>Register</DialogTitle>
           <DialogDescription>
-            Enter your credentials to access your account.
+            Create a new account to access our services.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <InputControl
               control={form.control}
+              name="name"
+              placeholder="Enter your name"
+              label="Name"
+            />
+            <InputControl
+              control={form.control}
               name="email"
-              type="email"
               placeholder="Enter your email"
               label="Email"
               description="We'll never share your email."
             />
             <InputControl
               control={form.control}
-              name="password"
               type="password"
-              placeholder="Enter your password"
+              name="password"
               label="Password"
+              placeholder="Create a password"
+            />
+            <InputControl
+              control={form.control}
+              type="password"
+              name="password_confirm"
+              label="Password Confirm"
+              placeholder="Create a password confirm"
             />
 
             <DialogFooter>
-              <Button type="submit">Login</Button>
+              <Button type="submit">Register</Button>
             </DialogFooter>
           </form>
         </Form>

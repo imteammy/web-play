@@ -1,11 +1,12 @@
-import { NavBar } from "@/components/nav-bar";
-import HomePage from "./_page";
+import Home from "@/components/public/homepage";
+import { NavBar } from "@/components/public/nav-bar";
+
 export default function Page() {
   return (
     <div className="container mx-auto">
       <NavBar />
       <div className="container mx-auto my-2">
-        <HomePage />
+        <Home />
       </div>
     </div>
   );

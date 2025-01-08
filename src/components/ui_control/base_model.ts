@@ -1,4 +1,4 @@
-import { HTMLInputTypeAttribute } from "react";
+import { HTMLInputTypeAttribute, ReactNode } from "react";
 import {
   Control,
   FieldPathValue,
@@ -21,7 +21,7 @@ interface BaseControlProps<
   control?: Control<TFieldValues, any>;
   disabled?: boolean;
   readOnly?: boolean;
-  label?: string;
+  label?: ReactNode;
   required?: boolean;
   className?: string;
   id?: string;

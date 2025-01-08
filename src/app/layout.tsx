@@ -1,20 +1,19 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
-import "./globals.css";
-import { Provider } from "@/components/design/provider";
-import { BaseLayout } from "@/components/base-layout";
-import { getLocale, getMessages } from "next-intl/server";
-import { NextIntlClientProvider } from "next-intl";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
+import { NextIntlClientProvider } from "next-intl";
+import { Provider } from "@/components/design/provider";
+import { getLocale, getMessages } from "next-intl/server";
+
+const geistSans = Geist({
   variable: "--font-geist-sans",
-  weight: "100 900",
+  subsets: ["latin"],
 });
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
+
+const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
-  weight: "100 900",
+  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
@@ -28,9 +27,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const locale = await getLocale();
-
-  // Providing all messages to the client
-  // side is the easiest way to get started
   const messages = await getMessages();
   return (
     <html lang={locale}>

@@ -1,4 +1,5 @@
-import { BaseLayout } from "@/components/base-layout";
+
+import { BaseLayout } from "@/components/layout/base-layout";
 import { type ReactNode } from "react";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {

@@ -1,4 +1,4 @@
-"use client";
+
 import { TranslationValues, useTranslations } from "next-intl";
 import { z } from "zod";
 
@@ -17,8 +17,7 @@ const hasInclusiveType = [
   "not_inclusive_with_path_other",
 ].reverse();
 
-export const useCreateCustomErrorMap = (): z.ZodErrorMap => {
-  const t = useTranslations("zod");
+export const createCustomErrorMap = (): z.ZodErrorMap => {
   return (issue, ctx) => {
     let key: any = "";
 

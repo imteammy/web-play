@@ -1,4 +1,5 @@
-import { NavBar } from "@/components/nav-bar";
+
+import { NavBar } from "@/components/public/nav-bar";
 import { type ReactNode } from "react";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {

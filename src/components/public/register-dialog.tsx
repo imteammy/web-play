@@ -25,7 +25,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { InputControl } from "./ui_control/input";
+import { InputControl } from "../ui_control/input";
 import { toast } from "sonner";
 
 const formSchema = z

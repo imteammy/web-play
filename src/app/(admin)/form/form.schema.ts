@@ -1,8 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldErrors, Mode } from "react-hook-form";
 import { z } from "zod";
-import { createWithEqualityFn as create } from "zustand/traditional";
-import { persist } from "zustand/middleware";
+
 export enum EmployeeTypeEnum {
   FULLTIME = "FULLTIME",
   PARTTIME = "PARTTIME",
@@ -116,34 +115,3 @@ type InterRefFormValue = {
 
 export type FormValues = z.infer<typeof schema> & InterRefFormValue;
 export const resolver = zodResolver(schema);
-
-type FormStoreState = {
-  error: FieldErrors<FormValues>;
-  saveError: (err: FieldErrors<FormValues>) => void;
-};
-
-export const useFormStore = create<FormStoreState>()(
-  persist(
-    (set, get) => ({
-      error: {},
-      saveError(err) {
-        const errstring = JSON.stringify(
-          { ...err },
-          (k, v) => {
-            if (v instanceof HTMLElement) return;
-            if (v instanceof BigInt) return v.toString();
-            return v;
-          },
-          4
-        );
-        set({
-          error: JSON.parse(errstring),
-        });
-      },
-    }),
-    {
-      name: "form",
-      version: 1,
-    }
-  )
-);
